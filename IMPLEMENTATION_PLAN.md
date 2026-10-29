@@ -360,48 +360,42 @@ Tiêu chí hoàn thành:
 - Giới hạn đã biết được trình bày rõ ràng.
 - Có thể tái lập dự án theo hướng dẫn đã viết.
 
-## 4. Cấu trúc repository dự kiến
+## 4. Cấu trúc repository và phân công vai trò
 
-Coding Agent phải khảo sát repository hiện tại trước khi tạo hoặc di chuyển file. Cấu trúc dưới đây chỉ là đề xuất, không phải cho phép tái cấu trúc ngay lập tức.
+Dự án áp dụng quy trình phát triển rõ ràng từ nghiên cứu thực nghiệm sang đóng gói module sản phẩm:
+- **Notebooks (
+otebooks/):** Không gian tương tác trực quan dùng để thực hiện Data Audit, EDA (khảo sát phân phối, tương quan, trực quan hóa), thử nghiệm nhanh các thuật toán baseline, so sánh mô hình và phân tích lỗi (error analysis).
+- **Modules .py (src/ml_core/):** Sau khi các giả thuyết và logic được kiểm chứng thực nghiệm ổn định trong notebook, tiến hành chuẩn hóa, tái cấu trúc và đưa các thành phần vào package ML Core độc lập, sạch, có type hints và docstrings.
+- **Tests (	ests/):** Đảm bảo chất lượng bằng kiểm thử tự động với pytest: kiểm tra tính toàn vẹn của dữ liệu đầu vào (schema, null, range), pipeline tiền xử lý (chống rò rỉ dữ liệu), kết quả dự đoán (predict contract, output format) và các kịch bản ngoại lệ/dữ liệu lỗi.
 
-```text
+\\	ext
 Medical_chatbot/
-├── docs/
-│   ├── implementation_plan.md
-│   ├── data_audit_report.md
-│   ├── ml_research_plan.md
-│   ├── ml_package_spec.md
-│   ├── architecture.md
-│   ├── conversation_safety.md
-│   ├── test_plan.md
-│   └── model_card.md
 ├── data/
-│   ├── raw/
-│   └── processed/
-├── ml_core/
-│   ├── preprocessing/
-│   ├── features/
-│   ├── training/
-│   ├── evaluation/
-│   ├── inference/
-│   └── artifacts/
-├── experiments/
-│   ├── configs/
-│   └── reports/
-├── backend/
-│   ├── api/
-│   ├── agent/
-│   ├── orchestration/
-│   └── safety/
-├── frontend/
-├── tests/
-│   ├── ml_core/
-│   ├── api/
-│   └── integration/
-├── pyproject.toml
+│   ├── raw/                  # Lưu trữ hoặc liên kết dữ liệu thô (được bảo vệ, không ghi đè)
+│   └── processed/            # Dữ liệu sau tiền xử lý, phân chia train/val/test
+├── docs/                     # Tài liệu thiết kế, báo cáo kiểm toán, experiment logs
+├── notebooks/                # Nghiên cứu, Data Audit, EDA, thử nghiệm thuật toán
+│   ├── 01_data_audit_eda.ipynb
+│   ├── 02_model_experiments.ipynb
+│   └── 03_error_analysis.ipynb
+├── src/
+│   └── ml_core/              # Package ML Core độc lập (Python modules)
+│       ├── __init__.py
+│       ├── data/             # DataLoader, data validation
+│       ├── preprocessing/    # Pipeline làm sạch và xử lý đặc trưng
+│       ├── models/           # Định nghĩa mô hình, baseline, training logic
+│       ├── evaluation/       # Metrics (Top-k, Macro-F1, Calibration)
+│       └── inference/        # Predictor interface, abstention rules
+├── tests/                    # Kiểm thử tự động với pytest
+│   ├── test_data_integrity.py   # Kiểm tra schema, missing, dữ liệu đầu vào
+│   ├── test_preprocessing.py    # Kiểm tra biến đổi đặc trưng, leakage
+│   ├── test_inference.py        # Kiểm tra contract dự đoán, output format
+│   └── test_error_handling.py   # Kiểm tra các trường hợp ngoại lệ, edge cases
+├── .gitignore                # Bảo vệ dữ liệu lớn, bỏ qua venv và cache
+├── requirements.txt          # Khai báo dependencies chính
+├── requirements.lock         # Cố định phiên bản tái lập
 └── README.md
-```
-
+\
 Lưu ý:
 - Dữ liệu gốc phải được bảo toàn. Không đưa dữ liệu lên repository công khai nếu giấy phép hoặc trạng thái riêng tư không cho phép.
 - Dữ liệu đã xử lý và artifact cần có chính sách lưu trữ, quản lý phiên bản rõ ràng.

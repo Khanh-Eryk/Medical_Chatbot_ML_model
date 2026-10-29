@@ -1,0 +1,25 @@
+# Python Virtual Environment
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Data Files & Artifacts (Bảo vệ dữ liệu lớn, tránh push lên remote GitHub)
+Disease and symptoms dataset.csv
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+
+# Models & Experiment artifacts
+models/*
+!models/.gitkeep
+experiments/
+
