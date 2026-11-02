@@ -178,7 +178,7 @@ Công việc:
 - Phân tích hiệu năng từng lớp và các kiểu dự đoán nhầm.
 - Duy trì baseline làm mốc tham chiếu.
 
-Các thuật toán có thể thử nghiệm:
+Các thuật toán thử nghiệm:
 - K-Nearest Neighbors (K-NN).
 - Decision Tree.
 - Random Forest.
